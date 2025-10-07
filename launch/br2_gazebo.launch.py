@@ -28,6 +28,7 @@ from launch.actions import (
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 
 
 def start_gzserver(context, *args, **kwargs):
@@ -55,9 +56,13 @@ def start_gzserver(context, *args, **kwargs):
 
     start_gazebo_server_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory('ros_ign_gazebo'), 'launch',
-                         'ign_gazebo.launch.py')),
-        launch_arguments={'gz_args': ['-r -s ', world]}.items()
+            PathJoinSubstitution([
+                FindPackageShare('ros_ign_gazebo'),
+                'launch',
+                'ign_gazebo.launch.py',
+            ])
+            ),
+        launch_arguments={'gz_args': ['-r ', world, ' --verbose']}.items(),
     )
 
     # start_gazebo_client_cmd = IncludeLaunchDescription(
